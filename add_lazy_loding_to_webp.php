@@ -11,4 +11,27 @@ function add_lazy_loading_to_webp( $html ) {
     return $html;
 }
 add_filter( 'wp_get_attachment_image', 'add_lazy_loading_to_webp' );
+
+/**
+ * Add lazy loading via JavaScript for WebP images in the footer
+ */
+function lazy_load_footer_webp_with_js() {
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Target only images in the footer
+        const footer = document.querySelector('footer');
+        if (!footer) return;
+
+        // Find all WebP images without 'loading=lazy'
+        const webpImages = footer.querySelectorAll('img[src$=".webp"]:not([loading])');
+        
+        webpImages.forEach(img => {
+            img.setAttribute('loading', 'lazy');
+        });
+    });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'lazy_load_footer_webp_with_js', 100);
 ?>
